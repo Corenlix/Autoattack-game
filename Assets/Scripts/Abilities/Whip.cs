@@ -22,7 +22,7 @@ namespace Abilities
         {
             WhipProjectile spawnedWhip = Instantiate(_whipProjectile, transform.position, Quaternion.identity);
             spawnedWhip.transform.localScale = Vector3.Scale(spawnedWhip.transform.localScale, transform.localScale);
-            spawnedWhip.Init(_minDamage, _maxDamage, 0.5f);
+            spawnedWhip.Init(_minDamage, _maxDamage);
         }
     }
 }

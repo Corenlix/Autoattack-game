@@ -9,6 +9,7 @@ public class Enemy : MonoBehaviour
 {
     [SerializeField] private float _moveSpeed;
     [SerializeField] private float _damageInSecond;
+    private bool _isDead;
     private Mover _mover;
     private Rigidbody2D _rigidbody;
     private Health _health;
@@ -16,18 +17,24 @@ public class Enemy : MonoBehaviour
     private Player _overlapPlayer;
     private Animator _animator;
     private static readonly int TakeDamage = Animator.StringToHash("TakeDamage");
+    private static readonly int Die = Animator.StringToHash("Die");
+    public event Action<Enemy> Died;
 
     public void SetTarget(Transform target)
     {
         _target = target;
     }
 
-    public void DealDamage(float damage, Vector2 knockbackDirection)
+    public bool TryDealDamage(float damage, Vector2 knockbackDirection)
     {
+        if (_isDead)
+            return false;
+        
         _health.DealDamage(damage);
         PopupSpawner.Instance.SpawnPopup(transform.position, damage);
         _rigidbody.MovePosition(_rigidbody.position + knockbackDirection);
         _animator.SetTrigger(TakeDamage);
+        return true;
     }
 
     private void Awake()
@@ -44,6 +51,7 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
+        if (_isDead) return;
         Move();
         Hit();
     }
@@ -69,7 +77,11 @@ public class Enemy : MonoBehaviour
     
     private void OnDie()
     {
+        Died?.Invoke(this);
         LootSpawner.Instance.Spawn(transform.position, LootType.Experience);
+        _animator.SetTrigger(Die);
+        _mover.SetSpeed(0);
+        _isDead = true;
     }
     
     private void OnCollisionEnter2D(Collision2D other)
@@ -91,5 +103,10 @@ public class Enemy : MonoBehaviour
     private void OnDestroy()
     {
         _health.Died -= OnDie;
+    }
+
+    private void Destroy()
+    {
+        Destroy(gameObject);
     }
 }

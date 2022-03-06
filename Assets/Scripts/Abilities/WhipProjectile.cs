@@ -6,13 +6,11 @@ namespace Abilities
     {
         private int _minDamage;
         private int _maxDamage;
-        private float _knockback;
         
-        public void Init(int minDamage, int maxDamage, float knockback)
+        public void Init(int minDamage, int maxDamage)
         {
             _minDamage = minDamage;
             _maxDamage = maxDamage;
-            _knockback = knockback;
         }
     
         private void Destroy()
@@ -24,9 +22,9 @@ namespace Abilities
         {
             if (other.TryGetComponent<Enemy>(out var enemy))
             {
-                Vector2 knockbackDirection = (enemy.transform.position - transform.position).normalized * _knockback;
+                Vector2 knockbackDirection = (enemy.transform.position - transform.position).normalized * Player.Knockback;
                 int damage = Random.Range(_minDamage, _maxDamage);
-                enemy.DealDamage(damage, knockbackDirection);
+                enemy.TryDealDamage(damage, knockbackDirection);
             }
         }
     }

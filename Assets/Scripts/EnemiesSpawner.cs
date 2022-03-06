@@ -5,36 +5,21 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
-public class EnemiesSpawner : MonoBehaviour
+public class EnemiesSpawner
 {
-    [SerializeField] private float _minSpawnPeriod;
-    [SerializeField] private float _maxSpawnPeriod;
-    [SerializeField] private Enemy _enemyPrefab; 
-    
     private Rect _zoneAroundPlayerWithoutEnemies;
     private Player _player;
-    private float _remainTime;
-
-    private void Awake()
+    
+    public EnemiesSpawner(Player player)
     {
-        _player = FindObjectOfType<Player>();
-
+        _player = player;
         var camera = Camera.main;
         float visibleZoneHeight = 2f * camera.orthographicSize;
         float visibleZoneWidth = visibleZoneHeight * camera.aspect;
         _zoneAroundPlayerWithoutEnemies = new Rect(-visibleZoneWidth / 2 - 1, -visibleZoneHeight / 2 - 1, visibleZoneWidth + 2, visibleZoneHeight + 2);
     }
 
-    private void Update()
-    {
-        _remainTime -= Time.deltaTime;
-        if (_remainTime > 0) return;
-        
-        Spawn();
-        _remainTime = Random.Range(_minSpawnPeriod, _maxSpawnPeriod);
-    }
-
-    private void Spawn()
+    public Enemy Spawn(Enemy enemyPrefab)
     {
         SpawnCorner corner = (SpawnCorner) Random.Range(0, 4);
         var spawnPosition = _player.transform.position;
@@ -61,7 +46,7 @@ public class EnemiesSpawner : MonoBehaviour
                     _zoneAroundPlayerWithoutEnemies.yMax);
                 break;
         }
-        Instantiate(_enemyPrefab, spawnPosition, Quaternion.identity);
+        return GameObject.Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
     }
 
     private enum SpawnCorner

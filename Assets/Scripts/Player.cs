@@ -5,13 +5,15 @@ using UnityEngine;
 [RequireComponent(typeof(Health))]
 public class Player : MonoBehaviour
 {
-    [SerializeField] private float _moveSpeed;
+    [SerializeField] private float _moveSpeed; 
+    [SerializeField] private ParticleSystem _bloodParticleSystem;
     private Mover _mover;
     private Animator _animator;
     private Health _health;
     private static readonly int Run = Animator.StringToHash("Run");
     private static readonly int TakeDamage = Animator.StringToHash("TakeDamage");
-
+    public const float Knockback = 0.25f;
+    
     private void Awake()
     {
         _mover = GetComponent<Mover>();
@@ -30,6 +32,7 @@ public class Player : MonoBehaviour
     {
         _health.DealDamage(damage);
         _animator.SetTrigger(TakeDamage);
+        _bloodParticleSystem.Play();
         return true;
     }
 
