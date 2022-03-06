@@ -3,6 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(Mover))]
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Health))]
+[RequireComponent(typeof(Level))]
 public class Player : MonoBehaviour
 {
     [SerializeField] private float _moveSpeed; 
@@ -10,6 +11,7 @@ public class Player : MonoBehaviour
     private Mover _mover;
     private Animator _animator;
     private Health _health;
+    private Level _level;
     private static readonly int Run = Animator.StringToHash("Run");
     private static readonly int TakeDamage = Animator.StringToHash("TakeDamage");
     public const float Knockback = 0.25f;
@@ -21,6 +23,7 @@ public class Player : MonoBehaviour
 
         _animator = GetComponent<Animator>();
         _health = GetComponent<Health>();
+        _level = GetComponent<Level>();
     }
 
     private void Update()
