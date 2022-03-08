@@ -4,13 +4,11 @@ namespace Abilities
 {
     public class WhipProjectile : MonoBehaviour, IAbility
     {
-        private int _minDamage;
-        private int _maxDamage;
+        private int _damage;
         
-        public void Init(int minDamage, int maxDamage)
+        public void Init(int damage)
         {
-            _minDamage = minDamage;
-            _maxDamage = maxDamage;
+            _damage = damage;
         }
     
         private void Destroy()
@@ -23,8 +21,7 @@ namespace Abilities
             if (other.TryGetComponent<Enemy>(out var enemy))
             {
                 Vector2 knockbackDirection = (enemy.transform.position - transform.position).normalized * Player.Knockback;
-                int damage = Random.Range(_minDamage, _maxDamage);
-                enemy.TryDealDamage(damage, knockbackDirection);
+                enemy.TryDealDamage(_damage, knockbackDirection);
             }
         }
     }

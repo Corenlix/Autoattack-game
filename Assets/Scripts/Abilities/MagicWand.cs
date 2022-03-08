@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Abilities
@@ -6,10 +7,10 @@ namespace Abilities
     {
         [SerializeField] private MagicProjectile _magicProjectile;
         [SerializeField] private float _reloadTime;
-        [SerializeField] private float _remainTimeToUse;
-        [SerializeField] private int _minDamage;
-        [SerializeField] private int _maxDamage;
+        [IntRangeSlider(0, 50)]
+        [SerializeField] private IntRange _damage = new IntRange(5,8);
         [SerializeField] private float _projectileSpeed;
+        private float _remainTimeToUse;
         
         private void Update()
         {
@@ -23,7 +24,13 @@ namespace Abilities
         {
             MagicProjectile spawnedProjectile = Instantiate(_magicProjectile, transform.position, Quaternion.identity);
             spawnedProjectile.transform.localScale = Vector3.Scale(spawnedProjectile.transform.localScale, transform.localScale);
-            spawnedProjectile.Init(_minDamage, _maxDamage, _projectileSpeed);
+            spawnedProjectile.Init(_damage.RandomValueInRange, _projectileSpeed);
         }
+    }
+
+    [Serializable]
+    public class MagicWandStats
+    {
+        
     }
 }

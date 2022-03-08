@@ -7,8 +7,8 @@ namespace Abilities
         [SerializeField] private WhipProjectile _whipProjectile;
         [SerializeField] private float _reloadTime;
         [SerializeField] private float _remainTimeToUse;
-        [SerializeField] private int _minDamage;
-        [SerializeField] private int _maxDamage;
+        [IntRangeSlider(0, 100)]
+        [SerializeField] private IntRange _damage = new IntRange(8, 15);
         
         private void Update()
         {
@@ -22,7 +22,7 @@ namespace Abilities
         {
             WhipProjectile spawnedWhip = Instantiate(_whipProjectile, transform.position, Quaternion.identity);
             spawnedWhip.transform.localScale = Vector3.Scale(spawnedWhip.transform.localScale, transform.localScale);
-            spawnedWhip.Init(_minDamage, _maxDamage);
+            spawnedWhip.Init(_damage.RandomValueInRange);
         }
     }
 }

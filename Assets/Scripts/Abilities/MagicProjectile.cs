@@ -7,17 +7,15 @@ namespace Abilities
     public class MagicProjectile : MonoBehaviour
     {
         private Enemy _target;
-        private int _minDamage;
-        private int _maxDamage;
+        private int _damage;
         private float _speed;
         private float _timeToDestroyWithoutEnemy = 10f;
         
         [SerializeField] private Rigidbody2D _rigidbody;
 
-        public void Init(int minDamage, int maxDamage, float speed)
+        public void Init(int damage, float speed)
         {
-            _minDamage = minDamage;
-            _maxDamage = maxDamage;
+            _damage = damage;
             _speed = speed;
             
             _target = Game.Instance.GetNearestEnemy(transform.position);
@@ -46,8 +44,7 @@ namespace Abilities
             if (other.TryGetComponent<Enemy>(out var enemy))
             {
                 Vector2 knockbackDirection = (enemy.transform.position - transform.position).normalized * Player.Knockback;
-                int damage = Random.Range(_minDamage, _maxDamage);
-                if(enemy.TryDealDamage(damage, knockbackDirection))
+                if(enemy.TryDealDamage(_damage, knockbackDirection))
                     Destroy(gameObject);
             }
         }
