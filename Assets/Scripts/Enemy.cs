@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Mover))]
 [RequireComponent(typeof(Animator))]
@@ -8,7 +7,7 @@ using UnityEngine.Serialization;
 public class Enemy : MonoBehaviour
 {
     [SerializeField] private float _moveSpeed;
-    [SerializeField] private float _damageInSecond;
+    [SerializeField] private float _damagePerSecond;
     private bool _isDead;
     private Mover _mover;
     private Rigidbody2D _rigidbody;
@@ -45,7 +44,7 @@ public class Enemy : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
 
-        SetTarget(FindObjectOfType<Player>().transform);
+        SetTarget(Game.Instance.CurrentPlayer.transform);
         _health.Died += OnDie;
     }
 
@@ -72,7 +71,7 @@ public class Enemy : MonoBehaviour
         bool isReadyToHit = _overlapPlayer;
         if (!isReadyToHit) return;
             
-        _overlapPlayer.TryDealDamage(_damageInSecond * Time.deltaTime);
+        _overlapPlayer.TryDealDamage(_damagePerSecond * Time.deltaTime);
     }
     
     private void OnDie()
