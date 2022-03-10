@@ -26,7 +26,7 @@ namespace Abilities
                 projectile.transform.position = _transform.position;
             }
 
-            projectile.transform.localScale = Vector3.Scale(projectile.transform.localScale, _transform.localScale);
+            projectile.transform.localScale = _transform.lossyScale;
             projectile.gameObject.SetActive(true);
             projectile.Init(stats);
             return projectile;
