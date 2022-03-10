@@ -16,6 +16,16 @@ namespace Abilities
         {
             _abilityLevel.LevelUp();
         }
+        
+        public override string GetDescription()
+        {
+            return _abilityLevel.CurrentStats.Description;
+        }
+
+        public override int GetLevel()
+        {
+            return _abilityLevel.CurrentLevel;
+        }
 
         public override void Init()
         {
@@ -48,5 +58,8 @@ namespace Abilities
         public IntRange Damage => _damage;
         [IntRangeSlider(0, 100)]
         [SerializeField] private IntRange _damage = new IntRange(8, 15);
+
+        public string Description => _description;
+        [SerializeField] private string _description;
     }
 }

@@ -10,6 +10,8 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private float _moveSpeed; 
     [SerializeField] private ParticleSystem _bloodParticleSystem;
+    [SerializeField] private AbilitiesGenerator _abilitiesGenerator;
+    [SerializeField] private Canvas _worldCanvas;
     private Mover _mover;
     private Animator _animator;
     private Health _health;
@@ -31,6 +33,9 @@ public class Player : MonoBehaviour
     private void Update()
     {
         MoveInput();
+        if(Input.GetKeyDown(KeyCode.Q))
+            Instantiate(_abilitiesGenerator, _worldCanvas.transform).Generate();
+        
     }
 
     public bool TryDealDamage(float damage)

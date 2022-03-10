@@ -17,6 +17,16 @@ namespace Abilities
             _abilityLevel.LevelUp();
         }
 
+        public override string GetDescription()
+        {
+            return _abilityLevel.CurrentStats.Description;
+        }
+
+        public override int GetLevel()
+        {
+            return _abilityLevel.CurrentLevel;
+        }
+
         public override void Init()
         {
             _abilityLevel = new AbilityLevel<MagicWandStats>(_stats);
@@ -51,5 +61,8 @@ namespace Abilities
 
         public float ProjectileSpeed => _projectileSpeed;
         [SerializeField] private float _projectileSpeed;
+
+        public string Description => _description;
+        [SerializeField] private string _description;
     }
 }
