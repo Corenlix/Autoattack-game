@@ -1,19 +1,29 @@
+using System;
 using UnityEngine;
 
 namespace Abilities
 {
-    public class WhipProjectile : MonoBehaviour, IAbility
+    [RequireComponent(typeof(Animator))]
+    [Serializable]
+    public class WhipProjectile : Projectile<WhipStats>
     {
-        private int _damage;
-        
-        public void Init(int damage)
+        private WhipStats _stats;
+        private Animator _animator;
+
+        private void Awake()
         {
-            _damage = damage;
+            _animator = GetComponent<Animator>();
+        }
+
+        public override void Init(WhipStats stats)
+        {
+            _stats = stats;
         }
     
-        private void Destroy()
+        private void Disable()
         {
-            Destroy(gameObject);
+            gameObject.SetActive(false);
+            _animator.Rebind();
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -21,7 +31,7 @@ namespace Abilities
             if (other.TryGetComponent<Enemy>(out var enemy))
             {
                 Vector2 knockbackDirection = (enemy.transform.position - transform.position).normalized * Player.Knockback;
-                enemy.TryDealDamage(_damage, knockbackDirection);
+                enemy.TryDealDamage(_stats.Damage.RandomValueInRange, knockbackDirection);
             }
         }
     }

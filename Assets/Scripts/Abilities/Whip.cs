@@ -3,39 +3,45 @@ using UnityEngine;
 
 namespace Abilities
 {
-    public class Whip : MonoBehaviour
+    public class Whip : Ability
     {
-        [SerializeField] private WhipProjectile _whipProjectile;
+        [SerializeField] private Projectile<WhipStats> _projectile;
         [SerializeField] private WhipStats[] _stats;
-        
+        private ProjectilePool<WhipStats> _pool;
         private float _remainTimeToUse;
-        private int _level = 1;
-        private WhipStats CurrentStats => _stats[_level - 1];
+        private AbilityLevel<WhipStats> _abilityLevel;
+        private TimerAction _timer;
         
-        public void LevelUp()
+        public override void LevelUp()
         {
-            if(_level < _stats.Length)
-                _level++;
+            _abilityLevel.LevelUp();
+        }
+
+        public override void Init()
+        {
+            _abilityLevel = new AbilityLevel<WhipStats>(_stats);
+            _pool = new ProjectilePool<WhipStats>(_projectile, transform);
+            _timer = new TimerAction(GetReloadTime, Use);
         }
         
         private void Update()
         {
-            _remainTimeToUse -= Time.deltaTime;
-            if ((_remainTimeToUse > 0)) return;
-            Use();
-            _remainTimeToUse = CurrentStats.ReloadTime;
+            _timer.Update();
         }
 
         private void Use()
         {
-            WhipProjectile spawnedWhip = Instantiate(_whipProjectile, transform.position, Quaternion.identity);
-            spawnedWhip.transform.localScale = Vector3.Scale(spawnedWhip.transform.localScale, transform.localScale);
-            spawnedWhip.Init(CurrentStats.Damage.RandomValueInRange);
+            _pool.Create(_abilityLevel.CurrentStats);
+        }
+
+        private float GetReloadTime()
+        {
+            return _abilityLevel.CurrentStats.ReloadTime;
         }
     }
 
     [Serializable]
-    public class WhipStats
+    public class WhipStats : IAbilityStats
     {
         public float ReloadTime => _reloadTime;
         [SerializeField] private float _reloadTime;

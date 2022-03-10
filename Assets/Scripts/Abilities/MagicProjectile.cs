@@ -1,23 +1,26 @@
+using System;
 using UnityEngine;
 
 namespace Abilities
 {
-    public class MagicProjectile : MonoBehaviour
+    [RequireComponent(typeof(Rigidbody2D))]
+    public class MagicProjectile : Projectile<MagicWandStats>
     {
         private Enemy _target;
-        private int _damage;
-        private float _speed;
+        private MagicWandStats _stats;
         private float _timeToDestroyWithoutEnemy = 10f;
-        
-        [SerializeField] private Rigidbody2D _rigidbody;
+        private Rigidbody2D _rigidbody;
 
-        public void Init(int damage, float speed)
+        private void Awake()
         {
-            _damage = damage;
-            _speed = speed;
-            
+            _rigidbody = GetComponent<Rigidbody2D>();
+        }
+
+        public override void Init(MagicWandStats stats)
+        {
+            _stats = stats;
             _target = Game.Instance.GetNearestEnemy(transform.position);
-            _rigidbody.velocity = Vector2.right * speed;
+            _rigidbody.velocity = Vector2.right * stats.ProjectileSpeed;
         }
 
         private void FixedUpdate()
@@ -31,7 +34,7 @@ namespace Abilities
             }
 
             Vector2 moveDirection = _target.transform.position - transform.position;
-            _rigidbody.velocity = moveDirection.normalized * _speed;
+            _rigidbody.velocity = moveDirection.normalized * _stats.ProjectileSpeed;
 
             float rotZ = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0f, 0f, rotZ);
@@ -42,8 +45,8 @@ namespace Abilities
             if (other.TryGetComponent<Enemy>(out var enemy))
             {
                 Vector2 knockbackDirection = (enemy.transform.position - transform.position).normalized * Player.Knockback;
-                if(enemy.TryDealDamage(_damage, knockbackDirection))
-                    Destroy(gameObject);
+                if(enemy.TryDealDamage(_stats.Damage.RandomValueInRange, knockbackDirection))
+                    gameObject.SetActive(false);
             }
         }
     }

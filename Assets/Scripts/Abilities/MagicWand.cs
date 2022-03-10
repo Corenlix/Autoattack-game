@@ -3,42 +3,45 @@ using UnityEngine;
 
 namespace Abilities
 {
-    public class MagicWand : MonoBehaviour
+    public class MagicWand : Ability
     {
-        [SerializeField] private MagicProjectile _magicProjectile;
+        [SerializeField] private Projectile<MagicWandStats> _projectile;
         [SerializeField] private MagicWandStats[] _stats;
-        
+        private ProjectilePool<MagicWandStats> _pool;
         private float _remainTimeToUse;
-        private int _level = 1;
-        private MagicWandStats CurrentStats => _stats[_level - 1];
-
-        public void LevelUp()
+        private AbilityLevel<MagicWandStats> _abilityLevel;
+        private TimerAction _timer;
+        
+        public override void LevelUp()
         {
-            if(_level < _stats.Length)
-                _level++;
+            _abilityLevel.LevelUp();
+        }
+
+        public override void Init()
+        {
+            _abilityLevel = new AbilityLevel<MagicWandStats>(_stats);
+            _pool = new ProjectilePool<MagicWandStats>(_projectile, transform);
+            _timer = new TimerAction(GetReloadTime, Use);
         }
         
         private void Update()
         {
-            if(Input.GetKeyDown(KeyCode.F))
-                LevelUp();
-            
-            _remainTimeToUse -= Time.deltaTime;
-            if ((_remainTimeToUse > 0)) return;
-            Use();
-            _remainTimeToUse = CurrentStats.ReloadTime;
+            _timer.Update();
         }
 
         private void Use()
         {
-            MagicProjectile spawnedProjectile = Instantiate(_magicProjectile, transform.position, Quaternion.identity);
-            spawnedProjectile.transform.localScale = Vector3.Scale(spawnedProjectile.transform.localScale, transform.localScale);
-            spawnedProjectile.Init(CurrentStats.Damage.RandomValueInRange, CurrentStats.ProjectileSpeed);
+            _pool.Create(_abilityLevel.CurrentStats);
+        }
+
+        private float GetReloadTime()
+        {
+            return _abilityLevel.CurrentStats.ReloadTime;
         }
     }
 
     [Serializable]
-    public class MagicWandStats
+    public class MagicWandStats : IAbilityStats
     {
         public float ReloadTime => _reloadTime;
         [SerializeField] private float _reloadTime;
