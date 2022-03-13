@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Abilities;
 using UnityEngine;
@@ -12,7 +13,6 @@ public class Player : MonoBehaviour
     [SerializeField] private ParticleSystem _bloodParticleSystem;
     [SerializeField] private AbilitiesGenerator _abilitiesGenerator;
     [SerializeField] private Canvas _worldCanvas;
-    protected AbilityLevel AbilityLevel;
     private Mover _mover;
     private Animator _animator;
     private Health _health;
@@ -29,14 +29,27 @@ public class Player : MonoBehaviour
         _animator = GetComponent<Animator>();
         _health = GetComponent<Health>();
         _level = GetComponent<Level>();
+        _level.LevelChanged += SelectNewAbility;
+    }
+
+    private void Start()
+    {
+        ActivateStartAbility();
+    }
+
+    private void ActivateStartAbility()
+    {
+        GetComponentInChildren<Whip>(true).LevelUp();
     }
 
     private void Update()
     {
         MoveInput();
-        if(Input.GetKeyDown(KeyCode.Q))
-            Instantiate(_abilitiesGenerator, _worldCanvas.transform).Generate();
-        
+    }
+
+    private void SelectNewAbility()
+    {
+        Instantiate(_abilitiesGenerator, _worldCanvas.transform).Generate();
     }
 
     public bool TryDealDamage(float damage)
@@ -60,5 +73,10 @@ public class Player : MonoBehaviour
             transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * scaleModifier,
                 transform.localScale.y, transform.localScale.z);
         }
+    }
+
+    private void OnDestroy()
+    {
+        _level.LevelChanged -= SelectNewAbility;
     }
 }

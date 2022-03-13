@@ -4,7 +4,8 @@ namespace Abilities
     {
         private IAbilityStats[] _stats;
         public int CurrentLevel => _level;
-        private int _level = 1;
+        public bool IsAvailableToLevelUp => _level < _stats.Length;
+        private int _level = 0;
         public IAbilityStats CurrentStats => _stats[_level - 1];
         public IAbilityStats NextLevelStats => _stats[_level];
 

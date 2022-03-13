@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using Abilities;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -8,21 +8,33 @@ public class AbilitiesGenerator : MonoBehaviour
 {
     [SerializeField] private AbilityUIView _abilityUIViewPrefab;
     private List<AbilityUIView> _abilityViews;
+    private const int AbilitiesCount = 3;
     
     public void Generate()
     {
         Unsubscribe();
         _abilityViews = new List<AbilityUIView>();
-        var availableAbilities = Game.Instance.CurrentPlayer.GetComponentsInChildren<Ability>();
-        for (int i = 0; i < 3; i++)
+        var availableAbilities = Game.Instance.CurrentPlayer.GetComponentsInChildren<Ability>().ToList();
+        int createdAbilityViews = 0;
+        while(createdAbilityViews < AbilitiesCount && availableAbilities.Count > 0)
         {
-            var abilityView = Instantiate(_abilityUIViewPrefab, transform);
-            _abilityViews.Add(abilityView);
-            int currentAbilityIndex = Random.Range(0, availableAbilities.Length);
+            int currentAbilityIndex = Random.Range(0, availableAbilities.Count());
             Ability currentAbility = availableAbilities[currentAbilityIndex];
-            abilityView.Init(currentAbility);
-            abilityView.Clicked += OnSelected;
+            availableAbilities.RemoveAt(currentAbilityIndex);
+            if (!currentAbility.IsAvailableToLevelUp)
+                continue;
+            
+            SpawnAbilityView(currentAbility);
+            createdAbilityViews++;
         }
+    }
+
+    private void SpawnAbilityView(Ability ability)
+    {
+        var abilityView = Instantiate(_abilityUIViewPrefab, transform);
+        _abilityViews.Add(abilityView);
+        abilityView.Init(ability);
+        abilityView.Clicked += OnSelected;
     }
 
     private void OnSelected()

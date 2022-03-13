@@ -8,7 +8,6 @@ namespace Abilities
         [SerializeField] private Projectile<MagicWandStats> _projectile;
         [SerializeField] private MagicWandStats[] _stats;
         private ProjectilePool<MagicWandStats> _pool;
-        private float _remainTimeToUse;
         private TimerAction _timer;
         
         
