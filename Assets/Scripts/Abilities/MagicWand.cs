@@ -9,27 +9,25 @@ namespace Abilities
         [SerializeField] private MagicWandStats[] _stats;
         private ProjectilePool<MagicWandStats> _pool;
         private float _remainTimeToUse;
-        private AbilityLevel<MagicWandStats> _abilityLevel;
         private TimerAction _timer;
         
-        public override void LevelUp()
+        
+        protected override void Init()
         {
-            _abilityLevel.LevelUp();
-        }
-
-        public override string GetDescription()
-        {
-            return _abilityLevel.CurrentStats.Description;
-        }
-
-        public override int GetLevel()
-        {
-            return _abilityLevel.CurrentLevel;
-        }
-
-        public override void Init()
-        {
-            _abilityLevel = new AbilityLevel<MagicWandStats>(_stats);
+            AbilityLevel = new AbilityLevel(_stats);
+            DescriptionBuilder = new DescriptionBuilder(
+                    () => DescriptionBuilder.AppendFloatValueDescription(DescriptionVariableNames.ReloadTime,
+                        () => ((MagicWandStats) AbilityLevel.NextLevelStats).ReloadTime,
+                        () => ((MagicWandStats) AbilityLevel.CurrentStats).ReloadTime),
+                    
+                    () => DescriptionBuilder.AppendIntRangeValueDescription(DescriptionVariableNames.Damage,
+                        () => ((MagicWandStats) AbilityLevel.NextLevelStats).Damage,
+                        () => ((MagicWandStats) AbilityLevel.CurrentStats).Damage),
+                    
+                    () => DescriptionBuilder.AppendFloatValueDescription(DescriptionVariableNames.ProjectileSpeed,
+                        () => ((MagicWandStats) AbilityLevel.NextLevelStats).ProjectileSpeed,
+                        () => ((MagicWandStats) AbilityLevel.CurrentStats).ProjectileSpeed)
+                );
             _pool = new ProjectilePool<MagicWandStats>(_projectile, transform);
             _timer = new TimerAction(GetReloadTime, Use);
         }
@@ -41,12 +39,12 @@ namespace Abilities
 
         private void Use()
         {
-            _pool.Create(_abilityLevel.CurrentStats);
+            _pool.Create((MagicWandStats)AbilityLevel.CurrentStats);
         }
 
         private float GetReloadTime()
         {
-            return _abilityLevel.CurrentStats.ReloadTime;
+            return ((MagicWandStats)AbilityLevel.CurrentStats).ReloadTime;
         }
     }
 
@@ -61,8 +59,5 @@ namespace Abilities
 
         public float ProjectileSpeed => _projectileSpeed;
         [SerializeField] private float _projectileSpeed;
-
-        public string Description => _description;
-        [SerializeField] private string _description;
     }
 }

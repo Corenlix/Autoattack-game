@@ -19,8 +19,8 @@ public class AbilityUIView : MonoBehaviour
     {
         _ability = ability;
         _name.text = ability.Name;
-        _description.text = ability.GetDescription();
-        _level.text = ability.GetLevel().ToString();
+        _description.text = ability.Description;
+        _level.text = ability.Level.ToString();
         _icon.sprite = ability.Icon;
     }
 

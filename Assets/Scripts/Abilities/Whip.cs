@@ -9,27 +9,22 @@ namespace Abilities
         [SerializeField] private WhipStats[] _stats;
         private ProjectilePool<WhipStats> _pool;
         private float _remainTimeToUse;
-        private AbilityLevel<WhipStats> _abilityLevel;
         private TimerAction _timer;
         
-        public override void LevelUp()
-        {
-            _abilityLevel.LevelUp();
-        }
-        
-        public override string GetDescription()
-        {
-            return _abilityLevel.CurrentStats.Description;
-        }
 
-        public override int GetLevel()
+        protected override void Init()
         {
-            return _abilityLevel.CurrentLevel;
-        }
+            AbilityLevel = new AbilityLevel(_stats);
 
-        public override void Init()
-        {
-            _abilityLevel = new AbilityLevel<WhipStats>(_stats);
+            DescriptionBuilder = new DescriptionBuilder(
+                () => DescriptionBuilder.AppendFloatValueDescription(DescriptionVariableNames.ReloadTime,
+                    () => ((WhipStats) AbilityLevel.NextLevelStats).ReloadTime,
+                    () => ((WhipStats) AbilityLevel.CurrentStats).ReloadTime),
+
+                () => DescriptionBuilder.AppendIntRangeValueDescription(DescriptionVariableNames.Damage,
+                    () => ((WhipStats) AbilityLevel.NextLevelStats).Damage,
+                    () => ((WhipStats) AbilityLevel.CurrentStats).Damage));
+            
             _pool = new ProjectilePool<WhipStats>(_projectile, transform);
             _timer = new TimerAction(GetReloadTime, Use);
         }
@@ -41,12 +36,12 @@ namespace Abilities
 
         private void Use()
         {
-            _pool.Create(_abilityLevel.CurrentStats);
+            _pool.Create((WhipStats)AbilityLevel.CurrentStats);
         }
 
         private float GetReloadTime()
         {
-            return _abilityLevel.CurrentStats.ReloadTime;
+            return ((WhipStats)AbilityLevel.CurrentStats).ReloadTime;
         }
     }
 
@@ -58,8 +53,5 @@ namespace Abilities
         public IntRange Damage => _damage;
         [IntRangeSlider(0, 100)]
         [SerializeField] private IntRange _damage = new IntRange(8, 15);
-
-        public string Description => _description;
-        [SerializeField] private string _description;
     }
 }

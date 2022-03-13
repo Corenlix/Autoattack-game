@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     [SerializeField] private ParticleSystem _bloodParticleSystem;
     [SerializeField] private AbilitiesGenerator _abilitiesGenerator;
     [SerializeField] private Canvas _worldCanvas;
+    protected AbilityLevel AbilityLevel;
     private Mover _mover;
     private Animator _animator;
     private Health _health;

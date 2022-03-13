@@ -1,13 +1,14 @@
 namespace Abilities
 {
-    public class AbilityLevel<T> where T : IAbilityStats
+    public class AbilityLevel
     {
-        private T[] _stats;
+        private IAbilityStats[] _stats;
         public int CurrentLevel => _level;
         private int _level = 1;
-        public T CurrentStats => _stats[_level - 1];
-    
-        public AbilityLevel(T[] stats)
+        public IAbilityStats CurrentStats => _stats[_level - 1];
+        public IAbilityStats NextLevelStats => _stats[_level];
+
+        public AbilityLevel(IAbilityStats[] stats)
         {
             _stats = stats;
         }
