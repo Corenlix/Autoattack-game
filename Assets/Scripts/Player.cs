@@ -1,7 +1,8 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using Abilities;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Mover))]
 [RequireComponent(typeof(Animator))]
@@ -10,9 +11,11 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField] private float _moveSpeed; 
-    [SerializeField] private ParticleSystem _bloodParticleSystem;
-    [SerializeField] private AbilitiesGenerator _abilitiesGenerator;
+    [SerializeField] private ParticleSystem _bloodParticleSystem; 
+    [SerializeField] private AbilitiesChooser _abilitiesChooser;
     [SerializeField] private Canvas _worldCanvas;
+    [SerializeField] private GameObject _abilitiesContainer;
+    private List<Ability> _abilities;
     private Mover _mover;
     private Animator _animator;
     private Health _health;
@@ -29,7 +32,8 @@ public class Player : MonoBehaviour
         _animator = GetComponent<Animator>();
         _health = GetComponent<Health>();
         _level = GetComponent<Level>();
-        _level.LevelChanged += SelectNewAbility;
+        _level.LevelChanged += ChooseNewAbility;
+        _abilities = _abilitiesContainer.GetComponents<Ability>().ToList();
     }
 
     private void Start()
@@ -47,9 +51,18 @@ public class Player : MonoBehaviour
         MoveInput();
     }
 
-    private void SelectNewAbility()
+    private void ChooseNewAbility()
     {
-        Instantiate(_abilitiesGenerator, _worldCanvas.transform).Generate();
+        var chooser = Instantiate(_abilitiesChooser, _worldCanvas.transform);
+        chooser.Generate(_abilities);
+        chooser.Chose += OnChoseAbility;
+        Time.timeScale = 0;
+    }
+
+    private void OnChoseAbility(AbilitiesChooser chooser)
+    {
+        Time.timeScale = 1;
+        chooser.Chose -= OnChoseAbility;
     }
 
     public bool TryDealDamage(float damage)
@@ -77,6 +90,6 @@ public class Player : MonoBehaviour
 
     private void OnDestroy()
     {
-        _level.LevelChanged -= SelectNewAbility;
+        _level.LevelChanged -= ChooseNewAbility;
     }
 }

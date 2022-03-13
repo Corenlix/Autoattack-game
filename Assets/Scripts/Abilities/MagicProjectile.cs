@@ -29,7 +29,7 @@ namespace Abilities
             {
                 _timeToDestroyWithoutEnemy -= Time.fixedDeltaTime;
                 if(_timeToDestroyWithoutEnemy <= 0)
-                    Destroy(gameObject);
+                    gameObject.SetActive(false);
                 return;
             }
 

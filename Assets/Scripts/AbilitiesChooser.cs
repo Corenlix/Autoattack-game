@@ -1,22 +1,24 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Abilities;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class AbilitiesGenerator : MonoBehaviour
+public class AbilitiesChooser : MonoBehaviour
 {
     [SerializeField] private AbilityUIView _abilityUIViewPrefab;
+    public event Action<AbilitiesChooser> Chose;
     private List<AbilityUIView> _abilityViews;
-    private const int AbilitiesCount = 3;
+    private const int ChooseAbilitiesCount = 3;
     
-    public void Generate()
+    public void Generate(List<Ability> availableAbilities)
     {
         Unsubscribe();
         _abilityViews = new List<AbilityUIView>();
-        var availableAbilities = Game.Instance.CurrentPlayer.GetComponentsInChildren<Ability>().ToList();
+        availableAbilities = availableAbilities.ToList();
         int createdAbilityViews = 0;
-        while(createdAbilityViews < AbilitiesCount && availableAbilities.Count > 0)
+        while(createdAbilityViews < ChooseAbilitiesCount && availableAbilities.Count > 0)
         {
             int currentAbilityIndex = Random.Range(0, availableAbilities.Count());
             Ability currentAbility = availableAbilities[currentAbilityIndex];
@@ -34,11 +36,12 @@ public class AbilitiesGenerator : MonoBehaviour
         var abilityView = Instantiate(_abilityUIViewPrefab, transform);
         _abilityViews.Add(abilityView);
         abilityView.Init(ability);
-        abilityView.Clicked += OnSelected;
+        abilityView.Clicked += OnChose;
     }
 
-    private void OnSelected()
+    private void OnChose()
     {
+        Chose?.Invoke(this);
         Destroy(gameObject);
     }
 
@@ -49,7 +52,7 @@ public class AbilitiesGenerator : MonoBehaviour
 
         foreach (var abilityView in _abilityViews)
         {
-            abilityView.Clicked -= OnSelected;
+            abilityView.Clicked -= OnChose;
         }
     }
 
