@@ -6,13 +6,15 @@ public class Experience : MonoBehaviour
 {
     [SerializeField] private int _addingExperience;
     private static readonly int Take = Animator.StringToHash("Take");
+    private bool _took;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.TryGetComponent<Level>(out var level))
+        if (!_took && other.TryGetComponent<Level>(out var level))
         {
             level.AddExperience(_addingExperience);
             GetComponent<Animator>().SetTrigger(Take);
+            _took = true;
         }
     }
 

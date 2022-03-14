@@ -1,8 +1,5 @@
-using System.Collections.Generic;
-using System.Linq;
 using Abilities;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Mover))]
 [RequireComponent(typeof(Animator))]
@@ -10,59 +7,41 @@ using UnityEngine.Serialization;
 [RequireComponent(typeof(Level))]
 public class Player : MonoBehaviour
 {
-    [SerializeField] private float _moveSpeed; 
-    [SerializeField] private ParticleSystem _bloodParticleSystem; 
-    [SerializeField] private AbilitiesChooser _abilitiesChooser;
+    [SerializeField] private float _moveSpeed;
+    [SerializeField] private ParticleSystem _bloodParticleSystem;
+    [SerializeField] private AbilitiesChooser _abilitiesChooserPrefab;
     [SerializeField] private Canvas _worldCanvas;
     [SerializeField] private GameObject _abilitiesContainer;
-    private List<Ability> _abilities;
+    [SerializeField] private Ability _startAbility;
     private Mover _mover;
     private Animator _animator;
     private Health _health;
     private Level _level;
+    private PlayerAbilities _abilities;
     private static readonly int Run = Animator.StringToHash("Run");
     private static readonly int TakeDamage = Animator.StringToHash("TakeDamage");
     public const float Knockback = 0.25f;
-    
+
     private void Awake()
     {
         _mover = GetComponent<Mover>();
         _mover.SetSpeed(_moveSpeed);
+        _abilities = new PlayerAbilities(_abilitiesContainer, _worldCanvas, _abilitiesChooserPrefab);
 
         _animator = GetComponent<Animator>();
         _health = GetComponent<Health>();
         _level = GetComponent<Level>();
-        _level.LevelChanged += ChooseNewAbility;
-        _abilities = _abilitiesContainer.GetComponents<Ability>().ToList();
+        _level.LevelChanged += _abilities.ChooseNewAbility;
     }
 
     private void Start()
     {
-        ActivateStartAbility();
-    }
-
-    private void ActivateStartAbility()
-    {
-        GetComponentInChildren<Whip>(true).LevelUp();
+        _startAbility.LevelUp();
     }
 
     private void Update()
     {
         MoveInput();
-    }
-
-    private void ChooseNewAbility()
-    {
-        var chooser = Instantiate(_abilitiesChooser, _worldCanvas.transform);
-        chooser.Generate(_abilities);
-        chooser.Chose += OnChoseAbility;
-        Time.timeScale = 0;
-    }
-
-    private void OnChoseAbility(AbilitiesChooser chooser)
-    {
-        Time.timeScale = 1;
-        chooser.Chose -= OnChoseAbility;
     }
 
     public bool TryDealDamage(float damage)
@@ -90,6 +69,6 @@ public class Player : MonoBehaviour
 
     private void OnDestroy()
     {
-        _level.LevelChanged -= ChooseNewAbility;
+        _level.LevelChanged -= _abilities.ChooseNewAbility;
     }
 }
