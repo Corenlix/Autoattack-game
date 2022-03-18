@@ -32,7 +32,7 @@ namespace Abilities
         {
             if (!_target)
                 return;
-            _target.TryDealDamage(_stats.Damage.RandomValueInRange, Vector2.zero);
+            _target.TryHit(_stats.Damage.RandomValueInRange, Vector2.zero);
         }
     }
 }

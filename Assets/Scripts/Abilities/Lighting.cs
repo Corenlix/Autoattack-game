@@ -10,7 +10,6 @@ namespace Abilities
         [SerializeField] private Projectile<LightingStats> _projectile;
         [SerializeField] private LightingStats[] _stats;
         private ProjectilePool<LightingStats> _pool;
-        private float _remainTimeToUse;
         private TimerAction _timer;
 
         protected override void Init()

@@ -8,10 +8,8 @@ namespace Abilities
         [SerializeField] private Projectile<WhipStats> _projectile;
         [SerializeField] private WhipStats[] _stats;
         private ProjectilePool<WhipStats> _pool;
-        private float _remainTimeToUse;
         private TimerAction _timer;
         
-
         protected override void Init()
         {
             AbilityLevel = new AbilityLevel(_stats);

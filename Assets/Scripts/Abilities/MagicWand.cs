@@ -9,8 +9,7 @@ namespace Abilities
         [SerializeField] private MagicWandStats[] _stats;
         private ProjectilePool<MagicWandStats> _pool;
         private TimerAction _timer;
-        
-        
+
         protected override void Init()
         {
             AbilityLevel = new AbilityLevel(_stats);

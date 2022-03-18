@@ -24,14 +24,14 @@ public class Enemy : MonoBehaviour
         _target = target;
     }
 
-    public bool TryDealDamage(float damage, Vector2 knockbackDirection)
+    public bool TryHit(float damage, Vector2 knockbackDirection)
     {
         if (_isDead)
             return false;
-        
+
         _health.DealDamage(damage);
         PopupSpawner.Instance.SpawnPopup(transform.position, damage);
-        _rigidbody.MovePosition(_rigidbody.position + knockbackDirection);
+        _rigidbody.MovePosition(_rigidbody.position + knockbackDirection.normalized * Player.Knockback);
         _animator.SetTrigger(TakeDamage);
         return true;
     }
@@ -52,7 +52,7 @@ public class Enemy : MonoBehaviour
     {
         if (_isDead) return;
         Move();
-        Hit();
+        HitPlayer();
     }
 
     private void Move()
@@ -66,7 +66,7 @@ public class Enemy : MonoBehaviour
             transform.localScale.y, transform.localScale.z);
     }
 
-    private void Hit()
+    private void HitPlayer()
     {
         bool isReadyToHit = _overlapPlayer;
         if (!isReadyToHit) return;

@@ -71,5 +71,6 @@ namespace Abilities
         public const string ReloadTime = "Cooldown";
         public const string Damage = "Damage";
         public const string ProjectileSpeed = "Projectile speed";
+        public const string KnockbackModifier = "Knockback modifier";
     }
 }

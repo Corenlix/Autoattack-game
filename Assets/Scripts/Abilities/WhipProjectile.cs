@@ -30,8 +30,8 @@ namespace Abilities
         {
             if (other.TryGetComponent<Enemy>(out var enemy))
             {
-                Vector2 knockbackDirection = (enemy.transform.position - transform.position).normalized * Player.Knockback;
-                enemy.TryDealDamage(_stats.Damage.RandomValueInRange, knockbackDirection);
+                Vector2 knockbackDirection = enemy.transform.position - transform.position;
+                enemy.TryHit(_stats.Damage.RandomValueInRange, knockbackDirection);
             }
         }
     }

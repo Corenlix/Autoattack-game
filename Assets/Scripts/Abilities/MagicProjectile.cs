@@ -44,8 +44,8 @@ namespace Abilities
         {
             if (other.TryGetComponent<Enemy>(out var enemy))
             {
-                Vector2 knockbackDirection = (enemy.transform.position - transform.position).normalized * Player.Knockback;
-                if(enemy.TryDealDamage(_stats.Damage.RandomValueInRange, knockbackDirection))
+                Vector2 knockbackDirection = enemy.transform.position - transform.position;
+                if(enemy.TryHit(_stats.Damage.RandomValueInRange, knockbackDirection))
                     gameObject.SetActive(false);
             }
         }
