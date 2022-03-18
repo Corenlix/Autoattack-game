@@ -30,5 +30,7 @@ public class Game : MonoBehaviour
         _enemies.Update();
     }
 
-    public Enemy GetNearestEnemy(Vector3 position) => _enemies.GetNearestEnemy(position);
+    public Enemy NearestEnemy(Vector3 position) => _enemies.GetNearestEnemy(position);
+
+    public Enemy RandomEnemy => _enemies.GetRandomEnemy();
 }

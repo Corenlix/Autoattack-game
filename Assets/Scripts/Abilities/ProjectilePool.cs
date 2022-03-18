@@ -15,5 +15,12 @@ namespace Abilities
             projectile.Init(stats);
             return projectile;
         }
+        
+        public Projectile<T> Create(T stats, Vector2 position)
+        {
+            Projectile<T> projectile = GetPoolable(position);
+            projectile.Init(stats);
+            return projectile;
+        }
     }
 }

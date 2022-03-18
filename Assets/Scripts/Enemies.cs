@@ -53,6 +53,11 @@ public class Enemies
 
         return nearestEnemy;
     }
+
+    public Enemy GetRandomEnemy()
+    {
+        return _enemies[Random.Range(0, _enemies.Count)];
+    }
     
     private Enemy Spawn()
     {

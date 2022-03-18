@@ -19,7 +19,7 @@ namespace Abilities
         public override void Init(MagicWandStats stats)
         {
             _stats = stats;
-            _target = Game.Instance.GetNearestEnemy(transform.position);
+            _target = Game.Instance.NearestEnemy(transform.position);
             _rigidbody.velocity = Vector2.right * stats.ProjectileSpeed;
         }
 
