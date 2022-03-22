@@ -1,27 +1,30 @@
+using Entities;
 using UnityEngine;
 
 public class Game : MonoBehaviour
 {
-    [FloatRangeSlider(0, 2f)]
-    [SerializeField] private FloatRange _spawnPeriod;
-    [SerializeField] private Enemy _enemyPrefab;
+    [FloatRangeSlider(0, 2f)] [SerializeField]
+    private FloatRange _spawnPeriod;
 
-    public static Game Instance => _instance;
-    private static Game _instance;
-    public Player CurrentPlayer => _currentPlayer;
-    private Player _currentPlayer;
+    [SerializeField] private Enemy _enemyPrefab;
     private Enemies _enemies;
+
+    public static Game Instance { get; private set; }
+
+    public Player CurrentPlayer { get; private set; }
+
+    public Enemy RandomEnemy => _enemies.GetRandomEnemy();
 
     private void Awake()
     {
-        if (_instance)
+        if (Instance)
         {
             Destroy(gameObject);
             return;
         }
-        
-        _instance = this;
-        _currentPlayer = FindObjectOfType<Player>();
+
+        Instance = this;
+        CurrentPlayer = FindObjectOfType<Player>();
         _enemies = new Enemies(_spawnPeriod, _enemyPrefab);
     }
 
@@ -30,7 +33,8 @@ public class Game : MonoBehaviour
         _enemies.Update();
     }
 
-    public Enemy NearestEnemy(Vector3 position) => _enemies.GetNearestEnemy(position);
-
-    public Enemy RandomEnemy => _enemies.GetRandomEnemy();
+    public Enemy NearestEnemy(Vector3 position)
+    {
+        return _enemies.GetNearestEnemy(position);
+    }
 }

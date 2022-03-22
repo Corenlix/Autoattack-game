@@ -1,5 +1,6 @@
 namespace Abilities
 {
-    public interface IAbilityStats{
+    public interface IAbilityStats
+    {
     }
 }

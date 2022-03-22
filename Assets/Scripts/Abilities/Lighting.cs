@@ -1,5 +1,6 @@
 using System;
 using Abilities.Description;
+using Abilities.Projectiles;
 using UnityEngine;
 
 namespace Abilities
@@ -11,48 +12,54 @@ namespace Abilities
         private ProjectilePool<LightingStats> _pool;
         private TimerAction _timer;
 
-        protected override void Init()
-        {
-            AbilityLevel = new AbilityLevel(_stats);
-
-            _pool = new ProjectilePool<LightingStats>(_projectile, transform);
-            _timer = new TimerAction(GetReloadTime, Use);
-        }
-
-        protected override string BuildDescription()
-        {
-            LightingStats currentStats = (LightingStats) AbilityLevel.CurrentStats;
-            LightingStats nextLevelStats = (LightingStats) AbilityLevel.NextLevelStats;
-            return new DescriptionBuilder(new DescriptionVariable []
-            {
-                new IntRangeDescriptionVariable(VariableName.Damage, nextLevelStats.Damage, currentStats.Damage),
-                new FloatDescriptionVariable(VariableName.ReloadTime, nextLevelStats.ReloadTime, currentStats.ReloadTime),
-            }).Build();
-        }
-
         private void Update()
         {
             _timer.Update();
         }
 
+        protected override void Init()
+        {
+            AbilityLevel = new AbilityLevel(_stats);
+        }
+
+        protected override string BuildDescription()
+        {
+            var currentStats = (LightingStats) AbilityLevel.CurrentStats;
+            var nextLevelStats = (LightingStats) AbilityLevel.NextLevelStats;
+            return new DescriptionBuilder(new DescriptionVariable[]
+            {
+                new IntRangeDescriptionVariable(VariableName.Damage, nextLevelStats.Damage, currentStats.Damage),
+                new FloatDescriptionVariable(VariableName.ReloadTime, nextLevelStats.ReloadTime,
+                    currentStats.ReloadTime)
+            }).Build();
+        }
+
+        protected override void OnReachFirstLevel()
+        {
+            _pool = new ProjectilePool<LightingStats>(_projectile, transform);
+            _timer = new TimerAction(GetReloadTime, Use);
+        }
+
         private void Use()
         {
-            _pool.Create((LightingStats)AbilityLevel.CurrentStats);
+            _pool.Create((LightingStats) AbilityLevel.CurrentStats);
         }
 
         private float GetReloadTime()
         {
-            return ((LightingStats)AbilityLevel.CurrentStats).ReloadTime;
+            return ((LightingStats) AbilityLevel.CurrentStats).ReloadTime;
         }
     }
 
     [Serializable]
     public class LightingStats : IAbilityStats
     {
-        public float ReloadTime => _reloadTime;
         [SerializeField] private float _reloadTime;
+
+        [IntRangeSlider(0, 100)] [SerializeField]
+        private IntRange _damage = new IntRange(8, 15);
+
+        public float ReloadTime => _reloadTime;
         public IntRange Damage => _damage;
-        [IntRangeSlider(0, 100)]
-        [SerializeField] private IntRange _damage = new IntRange(8, 15);
     }
 }

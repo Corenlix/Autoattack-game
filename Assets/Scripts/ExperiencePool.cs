@@ -1,12 +1,13 @@
 using UnityEngine;
 
-public class ExperiencePool : GameObjectPool<Experience>
+public class ExperiencePool : GameObjectPool<ExperienceItem>
 {
-    public ExperiencePool(Experience experiencePrefab, Transform poolOwner) : base(experiencePrefab, poolOwner)
+    public ExperiencePool(ExperienceItem experienceItemPrefab, Transform poolOwner) : base(experienceItemPrefab,
+        poolOwner)
     {
     }
 
-    public Experience Create(Vector3 position)
+    public ExperienceItem Create(Vector3 position)
     {
         return GetPoolable(position);
     }

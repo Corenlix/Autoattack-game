@@ -10,20 +10,20 @@ namespace Abilities.Description
         {
             _variables = variables;
         }
-        
+
         public string Build()
         {
-            StringBuilder builder = new StringBuilder();
-            bool appended = false;
+            var builder = new StringBuilder();
+            var appended = false;
             foreach (var variable in _variables)
             {
-                string variableDescription = variable.GetDescription();
+                var variableDescription = variable.GetDescription();
                 if (string.IsNullOrEmpty(variableDescription))
                     continue;
 
                 if (appended)
                     builder.Append(", ");
-                    
+
                 appended = true;
                 builder.Append(variableDescription);
             }

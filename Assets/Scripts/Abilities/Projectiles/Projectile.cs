@@ -1,4 +1,4 @@
-namespace Abilities
+namespace Abilities.Projectiles
 {
     public abstract class Projectile<T> : PoolableObject where T : IAbilityStats
     {

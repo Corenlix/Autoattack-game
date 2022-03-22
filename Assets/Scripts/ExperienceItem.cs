@@ -1,12 +1,12 @@
-using System;
+using Entities;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class Experience : PoolableObject
+public class ExperienceItem : PoolableObject
 {
-    [SerializeField] private int _addingExperience;
-    private Animator _animator;
     private static readonly int Take = Animator.StringToHash("Take");
+    [SerializeField] private int _addExperience;
+    private Animator _animator;
     private bool _took;
 
     private void Awake()
@@ -16,9 +16,9 @@ public class Experience : PoolableObject
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!_took && other.TryGetComponent<Level>(out var level))
+        if (!_took && other.TryGetComponent<PlayerLevel>(out var level))
         {
-            level.AddExperience(_addingExperience);
+            level.AddExperience(_addExperience);
             _animator.SetTrigger(Take);
             _took = true;
         }

@@ -1,13 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PoolableObject : MonoBehaviour
 {
-    public event Action<PoolableObject> Disabled;
-    public event Action<PoolableObject> Destroyed;
-    
     private void OnDisable()
     {
         Disabled?.Invoke(this);
@@ -17,4 +12,7 @@ public class PoolableObject : MonoBehaviour
     {
         Destroyed?.Invoke(this);
     }
+
+    public event Action<PoolableObject> Disabled;
+    public event Action<PoolableObject> Destroyed;
 }

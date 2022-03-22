@@ -3,21 +3,23 @@ using UnityEngine;
 
 public abstract class GameObjectPool<T> where T : PoolableObject
 {
-    private Queue<T> _availablePoolables = new Queue<T>();
-    private T _poolablePrefab;
-    private Transform _transform;
-    
-    protected GameObjectPool(T poolablePrefab, Transform poolOwner)
+    private readonly Queue<T> _availablePoolables = new Queue<T>();
+    private readonly T _poolableItemPrefab;
+    private readonly Transform _transform;
+
+    protected GameObjectPool(T poolableItemPrefab, Transform poolOwner)
     {
-        _poolablePrefab = poolablePrefab;
+        _poolableItemPrefab = poolableItemPrefab;
         _transform = poolOwner;
     }
-    
+
     protected T GetPoolable(Vector3 position)
     {
         T projectile;
         if (_availablePoolables.Count == 0)
+        {
             projectile = InstantiatePoolable(position);
+        }
         else
         {
             projectile = _availablePoolables.Dequeue();
@@ -33,10 +35,10 @@ public abstract class GameObjectPool<T> where T : PoolableObject
     {
         return GetPoolable(_transform.position);
     }
-    
+
     private T InstantiatePoolable(Vector3 position)
     {
-        var projectile = GameObject.Instantiate(_poolablePrefab, position, Quaternion.identity);
+        var projectile = Object.Instantiate(_poolableItemPrefab, position, Quaternion.identity);
         projectile.Disabled += PoolableOnDisabled;
         projectile.Destroyed += PoolableOnDestroyed;
         return projectile;
@@ -50,6 +52,6 @@ public abstract class GameObjectPool<T> where T : PoolableObject
 
     private void PoolableOnDisabled(PoolableObject projectile)
     {
-        _availablePoolables.Enqueue((T)projectile);
+        _availablePoolables.Enqueue((T) projectile);
     }
 }

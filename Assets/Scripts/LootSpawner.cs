@@ -1,28 +1,29 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class LootSpawner : MonoBehaviour
 {
-    [SerializeField] private Experience _experiencePrefab;
-    
-    public static LootSpawner Instance => _instance;
-    private static LootSpawner _instance;
+    [FormerlySerializedAs("_experiencePrefab")] [SerializeField]
+    private ExperienceItem experienceItemPrefab;
 
     private ExperiencePool _experiencePool;
 
+    public static LootSpawner Instance { get; private set; }
+
     private void Awake()
     {
-        if (_instance)
+        if (Instance)
             Destroy(gameObject);
-        else _instance = this;
+        else Instance = this;
 
-        _experiencePool = new ExperiencePool(_experiencePrefab, transform);
+        _experiencePool = new ExperiencePool(experienceItemPrefab, transform);
     }
 
     public void Spawn(Vector2 position, LootType lootType)
     {
         switch (lootType)
         {
-            case(LootType.Experience):
+            case LootType.Experience:
                 _experiencePool.Create(position);
                 break;
         }
@@ -31,5 +32,5 @@ public class LootSpawner : MonoBehaviour
 
 public enum LootType
 {
-    Experience,
+    Experience
 }

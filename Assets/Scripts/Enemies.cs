@@ -1,35 +1,32 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
+using Entities;
 using UnityEngine;
-using UnityEngine.Serialization;
-using Object = UnityEngine.Object;
-using Random = UnityEngine.Random;
 
 public class Enemies
 {
-    private Rect _zoneAroundPlayerWithoutEnemies;
-    private Enemy _enemyPrefab;
+    private readonly List<Enemy> _enemies = new List<Enemy>();
+    private readonly Enemy _enemyPrefab;
     private float _remainTime;
     private FloatRange _spawnPeriod;
-    private List<Enemy> _enemies = new List<Enemy>();
-    
+    private Rect _zoneAroundPlayerWithoutEnemies;
+
     public Enemies(FloatRange spawnPeriod, Enemy enemyPrefab)
     {
         _enemyPrefab = enemyPrefab;
         _spawnPeriod = spawnPeriod;
         var camera = Camera.main;
-        float visibleZoneHeight = 2f * camera.orthographicSize;
-        float visibleZoneWidth = visibleZoneHeight * camera.aspect;
-        _zoneAroundPlayerWithoutEnemies = new Rect(-visibleZoneWidth / 2 - 1, -visibleZoneHeight / 2 - 1, visibleZoneWidth + 2, visibleZoneHeight + 2);
+        var visibleZoneHeight = 2f * camera.orthographicSize;
+        var visibleZoneWidth = visibleZoneHeight * camera.aspect;
+        _zoneAroundPlayerWithoutEnemies = new Rect(-visibleZoneWidth / 2 - 1, -visibleZoneHeight / 2 - 1,
+            visibleZoneWidth + 2, visibleZoneHeight + 2);
     }
-    
+
     public void Update()
     {
         _remainTime -= Time.deltaTime;
         if (_remainTime > 0) return;
 
-        Enemy spawnedEnemy = Spawn();
+        var spawnedEnemy = Spawn();
         _enemies.Add(spawnedEnemy);
         _remainTime = _spawnPeriod.RandomValueInRange;
         spawnedEnemy.Died += OnEnemyDied;
@@ -38,12 +35,12 @@ public class Enemies
     public Enemy GetNearestEnemy(Vector3 position)
     {
         if (_enemies.Count == 0) return null;
-        float minDistance = Vector2.SqrMagnitude(_enemies[0].transform.position - position);
-        Enemy nearestEnemy = _enemies[0];
+        var minDistance = Vector2.SqrMagnitude(_enemies[0].transform.position - position);
+        var nearestEnemy = _enemies[0];
 
-        for (int i = 1; i < _enemies.Count; i++)
+        for (var i = 1; i < _enemies.Count; i++)
         {
-            float distance =  Vector2.SqrMagnitude(_enemies[i].transform.position - position);
+            var distance = Vector2.SqrMagnitude(_enemies[i].transform.position - position);
             if (distance < minDistance)
             {
                 minDistance = distance;
@@ -58,10 +55,10 @@ public class Enemies
     {
         return _enemies[Random.Range(0, _enemies.Count)];
     }
-    
+
     private Enemy Spawn()
     {
-        SpawnSide side = (SpawnSide) Random.Range(0, 4);
+        var side = (SpawnSide) Random.Range(0, 4);
         var spawnPosition = Game.Instance.CurrentPlayer.transform.position;
         switch (side)
         {
@@ -86,9 +83,10 @@ public class Enemies
                     _zoneAroundPlayerWithoutEnemies.yMax);
                 break;
         }
+
         return Object.Instantiate(_enemyPrefab, spawnPosition, Quaternion.identity);
     }
-    
+
     private void OnEnemyDied(Enemy enemy)
     {
         _enemies.Remove(enemy);
@@ -96,7 +94,7 @@ public class Enemies
     }
 
     private enum SpawnSide
-    { 
+    {
         Right,
         Up,
         Left,

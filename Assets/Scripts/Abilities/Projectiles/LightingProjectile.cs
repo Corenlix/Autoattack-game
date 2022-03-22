@@ -1,11 +1,12 @@
+using Entities;
 using UnityEngine;
 
-namespace Abilities
+namespace Abilities.Projectiles
 {
     public class LightingProjectile : Projectile<LightingStats>
     {
-        private LightingStats _stats;
         private Animator _animator;
+        private LightingStats _stats;
         private Enemy _target;
 
         private void Awake()

@@ -4,6 +4,13 @@ namespace Abilities.Description
 {
     public abstract class DescriptionVariable
     {
+        private readonly VariableName _name;
+
+        protected DescriptionVariable(VariableName name)
+        {
+            _name = name;
+        }
+
         protected string GetVariableName()
         {
             return _name switch
@@ -15,19 +22,13 @@ namespace Abilities.Description
             };
         }
 
-        protected DescriptionVariable(VariableName name)
-        {
-            _name = name;
-        }
-        
-        private readonly VariableName _name;
         public abstract string GetDescription();
     }
-    
+
     public enum VariableName
     {
         ReloadTime,
         Damage,
-        ProjectileSpeed,
+        ProjectileSpeed
     }
 }
