@@ -44,14 +44,13 @@ public class Player : MonoBehaviour
         MoveInput();
     }
 
-    public bool TryDealDamage(float damage)
+    public void DealDamage(float damage)
     {
         _health.DealDamage(damage);
         _animator.SetTrigger(TakeDamage);
         _bloodParticleSystem.Play();
-        return true;
     }
-
+    
     private void MoveInput()
     {
         Vector2 moveDirection = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));

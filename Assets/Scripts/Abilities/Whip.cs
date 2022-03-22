@@ -1,4 +1,5 @@
 using System;
+using Abilities.Description;
 using UnityEngine;
 
 namespace Abilities
@@ -13,20 +14,21 @@ namespace Abilities
         protected override void Init()
         {
             AbilityLevel = new AbilityLevel(_stats);
-
-            DescriptionBuilder = new DescriptionBuilder(
-                () => DescriptionBuilder.AppendFloatValueDescription(DescriptionVariableNames.ReloadTime,
-                    () => ((WhipStats) AbilityLevel.NextLevelStats).ReloadTime,
-                    () => ((WhipStats) AbilityLevel.CurrentStats).ReloadTime),
-
-                () => DescriptionBuilder.AppendIntRangeValueDescription(DescriptionVariableNames.Damage,
-                    () => ((WhipStats) AbilityLevel.NextLevelStats).Damage,
-                    () => ((WhipStats) AbilityLevel.CurrentStats).Damage));
-            
             _pool = new ProjectilePool<WhipStats>(_projectile, transform);
             _timer = new TimerAction(GetReloadTime, Use);
         }
-        
+
+        protected override string BuildDescription()
+        {
+            WhipStats currentStats = (WhipStats) AbilityLevel.CurrentStats;
+            WhipStats nextLevelStats = (WhipStats) AbilityLevel.NextLevelStats;
+            return new DescriptionBuilder(new DescriptionVariable []
+            {
+                new IntRangeDescriptionVariable(VariableName.Damage, nextLevelStats.Damage, currentStats.Damage),
+                new FloatDescriptionVariable(VariableName.ReloadTime, nextLevelStats.ReloadTime, currentStats.ReloadTime),
+            }).Build();
+        }
+
         private void Update()
         {
             _timer.Update();

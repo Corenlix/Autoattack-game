@@ -1,4 +1,5 @@
 using System;
+using Abilities.Description;
 using UnityEngine;
 
 namespace Abilities
@@ -13,21 +14,20 @@ namespace Abilities
         protected override void Init()
         {
             AbilityLevel = new AbilityLevel(_stats);
-            DescriptionBuilder = new DescriptionBuilder(
-                    () => DescriptionBuilder.AppendFloatValueDescription(DescriptionVariableNames.ReloadTime,
-                        () => ((MagicWandStats) AbilityLevel.NextLevelStats).ReloadTime,
-                        () => ((MagicWandStats) AbilityLevel.CurrentStats).ReloadTime),
-                    
-                    () => DescriptionBuilder.AppendIntRangeValueDescription(DescriptionVariableNames.Damage,
-                        () => ((MagicWandStats) AbilityLevel.NextLevelStats).Damage,
-                        () => ((MagicWandStats) AbilityLevel.CurrentStats).Damage),
-                    
-                    () => DescriptionBuilder.AppendFloatValueDescription(DescriptionVariableNames.ProjectileSpeed,
-                        () => ((MagicWandStats) AbilityLevel.NextLevelStats).ProjectileSpeed,
-                        () => ((MagicWandStats) AbilityLevel.CurrentStats).ProjectileSpeed)
-                );
             _pool = new ProjectilePool<MagicWandStats>(_projectile, transform);
             _timer = new TimerAction(GetReloadTime, Use);
+        }
+        
+        protected override string BuildDescription()
+        {
+            MagicWandStats currentStats = (MagicWandStats) AbilityLevel.CurrentStats;
+            MagicWandStats nextLevelStats = (MagicWandStats) AbilityLevel.NextLevelStats;
+            return new DescriptionBuilder(new DescriptionVariable []
+            {
+                new IntRangeDescriptionVariable(VariableName.Damage, nextLevelStats.Damage, currentStats.Damage),
+                new FloatDescriptionVariable(VariableName.ReloadTime, nextLevelStats.ReloadTime, currentStats.ReloadTime),
+                new FloatDescriptionVariable(VariableName.ProjectileSpeed, nextLevelStats.ProjectileSpeed, currentStats.ProjectileSpeed),
+            }).Build();
         }
         
         private void Update()

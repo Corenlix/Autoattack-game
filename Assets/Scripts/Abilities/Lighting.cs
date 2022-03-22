@@ -1,6 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using Abilities.Description;
 using UnityEngine;
 
 namespace Abilities
@@ -16,19 +15,21 @@ namespace Abilities
         {
             AbilityLevel = new AbilityLevel(_stats);
 
-            DescriptionBuilder = new DescriptionBuilder(
-                () => DescriptionBuilder.AppendFloatValueDescription(DescriptionVariableNames.ReloadTime,
-                    () => ((LightingStats) AbilityLevel.NextLevelStats).ReloadTime,
-                    () => ((LightingStats) AbilityLevel.CurrentStats).ReloadTime),
-
-                () => DescriptionBuilder.AppendIntRangeValueDescription(DescriptionVariableNames.Damage,
-                    () => ((LightingStats) AbilityLevel.NextLevelStats).Damage,
-                    () => ((LightingStats) AbilityLevel.CurrentStats).Damage));
-            
             _pool = new ProjectilePool<LightingStats>(_projectile, transform);
             _timer = new TimerAction(GetReloadTime, Use);
         }
-        
+
+        protected override string BuildDescription()
+        {
+            LightingStats currentStats = (LightingStats) AbilityLevel.CurrentStats;
+            LightingStats nextLevelStats = (LightingStats) AbilityLevel.NextLevelStats;
+            return new DescriptionBuilder(new DescriptionVariable []
+            {
+                new IntRangeDescriptionVariable(VariableName.Damage, nextLevelStats.Damage, currentStats.Damage),
+                new FloatDescriptionVariable(VariableName.ReloadTime, nextLevelStats.ReloadTime, currentStats.ReloadTime),
+            }).Build();
+        }
+
         private void Update()
         {
             _timer.Update();

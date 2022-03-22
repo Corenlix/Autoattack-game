@@ -71,7 +71,7 @@ public class Enemy : MonoBehaviour
         bool isReadyToHit = _overlapPlayer;
         if (!isReadyToHit) return;
             
-        _overlapPlayer.TryDealDamage(_damagePerSecond * Time.deltaTime);
+        _overlapPlayer.DealDamage(_damagePerSecond * Time.deltaTime);
     }
     
     private void OnDie()

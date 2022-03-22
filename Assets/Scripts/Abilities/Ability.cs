@@ -21,7 +21,6 @@ namespace Abilities
         public bool IsAvailableToLevelUp => AbilityLevel.IsAvailableToLevelUp;
         
         protected AbilityLevel AbilityLevel;
-        protected DescriptionBuilder DescriptionBuilder;
 
         private void Awake()
         {
@@ -40,9 +39,12 @@ namespace Abilities
 
             AbilityLevel.LevelUp();
             _description = _nextLevelDescription;
-            if(AbilityLevel.IsAvailableToLevelUp)
-                _nextLevelDescription = DescriptionBuilder.Build();
+            if (AbilityLevel.IsAvailableToLevelUp)
+                _nextLevelDescription = BuildDescription();
         }
+        
         protected abstract void Init();
+
+        protected abstract string BuildDescription();
     }
 }

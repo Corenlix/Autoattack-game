@@ -1,27 +1,29 @@
 using System;
+using Abilities.Description;
 using UnityEngine;
 
 namespace Abilities
 {
     public class Garlic : Ability
     {
-        [SerializeField] private GarlicProjectile _projectile;
+        [SerializeField] private GarlicProjectile _projectilePrefab;
         [SerializeField] private GarlicStats[] _stats;
         private GarlicProjectile _spawnedProjectile;
 
         protected override void Init()
         {
             AbilityLevel = new AbilityLevel(_stats);
+        }
 
-            DescriptionBuilder = new DescriptionBuilder(
-                () => DescriptionBuilder.AppendIntRangeValueDescription(DescriptionVariableNames.Damage,
-                    () => ((GarlicStats) AbilityLevel.NextLevelStats).Damage,
-                    () => ((GarlicStats) AbilityLevel.CurrentStats).Damage),
-                
-                () => DescriptionBuilder.AppendFloatValueDescription(DescriptionVariableNames.ReloadTime,
-                    () => ((GarlicStats) AbilityLevel.NextLevelStats).ReloadTime,
-                    () => ((GarlicStats) AbilityLevel.CurrentStats).ReloadTime)
-                );
+        protected override string BuildDescription()
+        {
+            GarlicStats currentStats = (GarlicStats) AbilityLevel.CurrentStats;
+            GarlicStats nextLevelStats = (GarlicStats) AbilityLevel.NextLevelStats;
+            return new DescriptionBuilder(new DescriptionVariable []
+            {
+                new IntRangeDescriptionVariable(VariableName.Damage, nextLevelStats.Damage, currentStats.Damage),
+                new FloatDescriptionVariable(VariableName.ReloadTime, nextLevelStats.ReloadTime, currentStats.ReloadTime),
+            }).Build();
         }
 
         private void OnEnable()
@@ -34,7 +36,7 @@ namespace Abilities
 
         private void StartWork()
         {
-            _spawnedProjectile = Instantiate(_projectile, transform.position, transform.rotation, transform);
+            _spawnedProjectile = Instantiate(_projectilePrefab, transform.position, transform.rotation, transform);
         }
 
         private void Update()
