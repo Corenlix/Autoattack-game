@@ -12,7 +12,7 @@ namespace Abilities
         public Sprite Icon => _icon;
         public string Name => _name;
 
-        public string NextLevelNextLevelDescription { get; private set; }
+        public string NextLevelDescription { get; private set; }
 
         public string Description => _description;
 
@@ -22,7 +22,7 @@ namespace Abilities
 
         private void Awake()
         {
-            NextLevelNextLevelDescription = _description;
+            NextLevelDescription = _description;
             enabled = false;
             Init();
         }
@@ -32,16 +32,16 @@ namespace Abilities
             if (!AbilityLevel.IsAvailableToLevelUp)
                 return;
 
-            if (AbilityLevel.CurrentLevel == 0)
+            AbilityLevel.LevelUp();
+            if (AbilityLevel.CurrentLevel == 1)
             {
                 enabled = true;
                 OnReachFirstLevel();
             }
-
-            AbilityLevel.LevelUp();
-            _description = NextLevelNextLevelDescription;
+            
+            _description = NextLevelDescription;
             if (AbilityLevel.IsAvailableToLevelUp)
-                NextLevelNextLevelDescription = BuildDescription();
+                NextLevelDescription = BuildDescription();
         }
 
         protected abstract void Init();

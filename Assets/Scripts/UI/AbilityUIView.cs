@@ -31,7 +31,7 @@ namespace UI
         {
             _ability = ability;
             _name.text = ability.Name;
-            _description.text = ability.NextLevelNextLevelDescription;
+            _description.text = ability.NextLevelDescription;
             _level.text = (ability.Level + 1).ToString();
             _icon.sprite = ability.Icon;
         }

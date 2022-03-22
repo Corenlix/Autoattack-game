@@ -18,6 +18,8 @@ namespace Abilities.Description
                 VariableName.ReloadTime => "Cooldown",
                 VariableName.Damage => "Damage",
                 VariableName.ProjectileSpeed => "ProjectileSpeed",
+                VariableName.OrbitRadius => "Orbit radius",
+                VariableName.TurnoverPeriod => "Turnover time",
                 _ => throw new InvalidEnumArgumentException()
             };
         }
@@ -29,6 +31,8 @@ namespace Abilities.Description
     {
         ReloadTime,
         Damage,
-        ProjectileSpeed
+        ProjectileSpeed,
+        OrbitRadius,
+        TurnoverPeriod,
     }
 }

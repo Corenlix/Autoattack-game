@@ -1,7 +1,11 @@
+using System;
+
 namespace Abilities
 {
     public class AbilityLevel
     {
+        public event Action LevelChanged;
+        
         private readonly IAbilityStats[] _stats;
 
         public AbilityLevel(IAbilityStats[] stats)
@@ -17,8 +21,11 @@ namespace Abilities
 
         public void LevelUp()
         {
-            if (CurrentLevel < _stats.Length)
-                CurrentLevel++;
+            if (CurrentLevel >= _stats.Length)
+                return;
+            
+            CurrentLevel++;
+            LevelChanged?.Invoke();
         }
     }
 }
