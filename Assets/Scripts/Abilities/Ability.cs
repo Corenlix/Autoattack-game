@@ -1,3 +1,4 @@
+using Entities;
 using UnityEngine;
 
 namespace Abilities
@@ -24,7 +25,6 @@ namespace Abilities
         {
             NextLevelDescription = _description;
             enabled = false;
-            Init();
         }
 
         public void LevelUp()
@@ -44,7 +44,7 @@ namespace Abilities
                 NextLevelDescription = BuildDescription();
         }
 
-        protected abstract void Init();
+        public abstract void Init(Player abilityOwner);
 
         protected abstract string BuildDescription();
 

@@ -11,16 +11,14 @@ namespace Entities
     [RequireComponent(typeof(PlayerLevel))]
     public class Player : MonoBehaviour
     {
+        public Vector2 MoveDirection => _mover.MoveDirection;
         public const float Knockback = 0.25f;
         private static readonly int Run = Animator.StringToHash("Run");
         private static readonly int TakeDamage = Animator.StringToHash("TakeDamage");
         [SerializeField] private float _moveSpeed;
         [SerializeField] private ParticleSystem _bloodParticleSystem;
 
-        [FormerlySerializedAs("abilitiesChooserViewPrefab")]
-        [FormerlySerializedAs("_abilitiesChooserPrefab")]
-        [SerializeField]
-        private AbilitiesChooserUIView abilitiesChooserUIViewPrefab;
+        [SerializeField] private AbilitiesChooserUIView abilitiesChooserUIViewPrefab;
 
         [SerializeField] private Canvas _worldCanvas;
         [SerializeField] private GameObject _abilitiesContainer;
@@ -35,7 +33,7 @@ namespace Entities
         {
             _mover = GetComponent<Mover>();
             _mover.SetSpeed(_moveSpeed);
-            _abilities = new PlayerAbilities(_abilitiesContainer, _worldCanvas, abilitiesChooserUIViewPrefab);
+            _abilities = new PlayerAbilities(this, _abilitiesContainer, _worldCanvas, abilitiesChooserUIViewPrefab);
 
             _animator = GetComponent<Animator>();
             _health = GetComponent<Health>();
@@ -51,6 +49,8 @@ namespace Entities
         private void Update()
         {
             MoveInput();
+            if(Input.GetKeyDown(KeyCode.Q))
+                _playerLevel.AddExperience(10);
         }
 
         private void OnDestroy()

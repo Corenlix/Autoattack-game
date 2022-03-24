@@ -5,6 +5,7 @@ namespace Entities
     [RequireComponent(typeof(Rigidbody2D))]
     public class Mover : MonoBehaviour
     {
+        public Vector2 MoveDirection => _moveDirection;
         private Vector2 _moveDirection;
         private Rigidbody2D _rigidbody;
         private float _speed;

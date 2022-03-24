@@ -8,16 +8,19 @@ namespace Entities
 {
     public class PlayerAbilities
     {
+        private Player _abilitiesOwner;
         private readonly List<Ability> _abilities;
         private readonly AbilitiesChooserUIView _chooserUIViewPrefab;
         private readonly Canvas _worldCanvas;
 
-        public PlayerAbilities(GameObject abilitiesContainer, Canvas worldCanvas,
+        public PlayerAbilities(Player abilitiesOwner, GameObject abilitiesContainer, Canvas worldCanvas,
             AbilitiesChooserUIView chooserUIViewPrefab)
         {
-            _abilities = abilitiesContainer.GetComponents<Ability>().ToList();
+            _abilitiesOwner = abilitiesOwner;
             _worldCanvas = worldCanvas;
             _chooserUIViewPrefab = chooserUIViewPrefab;
+            _abilities = abilitiesContainer.GetComponents<Ability>().ToList();
+            InitAbilities();
         }
 
         public void ChooseNewAbility()
@@ -32,6 +35,14 @@ namespace Entities
         {
             Time.timeScale = 1;
             chooserUIView.Chose -= OnChoseAbility;
+        }
+
+        private void InitAbilities()
+        {
+            foreach (var ability in _abilities)
+            {
+                ability.Init(_abilitiesOwner);
+            }
         }
     }
 }

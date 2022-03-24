@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Abilities.Description;
 using Abilities.Projectiles;
+using Entities;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -14,8 +15,8 @@ namespace Abilities
         [SerializeField] private OrbitStats[] _stats;
         private OrbitProjectile _spawnedProjectile;
         private float _orbitParameter;
-    
-        protected override void Init()
+
+        public override void Init(Player abilityOwner)
         {
             AbilityLevel = new AbilityLevel(_stats);
         }

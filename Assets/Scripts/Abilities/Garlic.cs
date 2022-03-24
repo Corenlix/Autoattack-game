@@ -1,6 +1,7 @@
 using System;
 using Abilities.Description;
 using Abilities.Projectiles;
+using Entities;
 using UnityEngine;
 
 namespace Abilities
@@ -16,7 +17,7 @@ namespace Abilities
             _spawnedProjectile.Use((GarlicStats) AbilityLevel.CurrentStats);
         }
 
-        protected override void Init()
+        public override void Init(Player abilityOwner)
         {
             AbilityLevel = new AbilityLevel(_stats);
         }
