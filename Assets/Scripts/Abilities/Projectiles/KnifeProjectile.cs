@@ -27,7 +27,7 @@ namespace Abilities.Projectiles
         public void SetMoveDirection(Vector2 direction)
         {
             if (direction == Vector2.zero)
-                direction = transform.localScale.x > 0 ? transform.right : -transform.right;
+                direction = transform.localScale.x > 0 ? Vector3.right : -Vector3.right;
             _rigidbody.velocity = direction * _stats.ProjectileSpeed;
             
             var rotZ = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
