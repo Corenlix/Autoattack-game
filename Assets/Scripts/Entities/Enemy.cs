@@ -9,10 +9,14 @@ namespace Entities
     [RequireComponent(typeof(Health))]
     public class Enemy : MonoBehaviour
     {
-        private static readonly int TakeDamage = Animator.StringToHash("TakeDamage");
-        private static readonly int Die = Animator.StringToHash("Die");
+        public event Action<Enemy> Died;
+        
         [SerializeField] private float _moveSpeed;
         [SerializeField] private float _damagePerSecond;
+        
+        private static readonly int TakeDamage = Animator.StringToHash("TakeDamage");
+        private static readonly int Die = Animator.StringToHash("Die");
+        
         private Animator _animator;
         private Health _health;
         private bool _isDead;
@@ -20,47 +24,6 @@ namespace Entities
         private Player _overlapPlayer;
         private Rigidbody2D _rigidbody;
         private Transform _target;
-
-        private void Awake()
-        {
-            _mover = GetComponent<Mover>();
-            _mover.SetSpeed(_moveSpeed);
-            _health = GetComponent<Health>();
-            _rigidbody = GetComponent<Rigidbody2D>();
-            _animator = GetComponent<Animator>();
-
-            SetTarget(Game.Instance.CurrentPlayer.transform);
-            _health.Died += OnDie;
-        }
-
-        private void Update()
-        {
-            if (_isDead) return;
-            Move();
-            HitPlayer();
-        }
-
-        private void OnDestroy()
-        {
-            _health.Died -= OnDie;
-        }
-
-        private void OnCollisionEnter2D(Collision2D other)
-        {
-            if (other.gameObject.TryGetComponent<Player>(out var player)) _overlapPlayer = player;
-        }
-
-        private void OnCollisionExit2D(Collision2D other)
-        {
-            if (_overlapPlayer && other.gameObject == _overlapPlayer.gameObject) _overlapPlayer = null;
-        }
-
-        public event Action<Enemy> Died;
-
-        public void SetTarget(Transform target)
-        {
-            _target = target;
-        }
 
         public bool TryHit(float damage, Vector2 knockbackDirection)
         {
@@ -100,6 +63,45 @@ namespace Entities
             _animator.SetTrigger(Die);
             _mover.SetSpeed(0);
             _isDead = true;
+        }
+        
+        private void Awake()
+        {
+            _mover = GetComponent<Mover>();
+            _mover.SetSpeed(_moveSpeed);
+            _health = GetComponent<Health>();
+            _rigidbody = GetComponent<Rigidbody2D>();
+            _animator = GetComponent<Animator>();
+
+            SetTarget(Game.Instance.CurrentPlayer.transform);
+            _health.Died += OnDie;
+        }
+
+        private void Update()
+        {
+            if (_isDead) return;
+            Move();
+            HitPlayer();
+        }
+
+        private void OnDestroy()
+        {
+            _health.Died -= OnDie;
+        }
+
+        private void OnCollisionEnter2D(Collision2D other)
+        {
+            if (other.gameObject.TryGetComponent<Player>(out var player)) _overlapPlayer = player;
+        }
+
+        private void OnCollisionExit2D(Collision2D other)
+        {
+            if (_overlapPlayer && other.gameObject == _overlapPlayer.gameObject) _overlapPlayer = null;
+        }
+        
+        private void SetTarget(Transform target)
+        {
+            _target = target;
         }
 
         private void Destroy()

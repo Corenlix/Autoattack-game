@@ -10,11 +10,6 @@ namespace Entities
         private Rigidbody2D _rigidbody;
         private float _speed;
 
-        private void Awake()
-        {
-            _rigidbody = GetComponent<Rigidbody2D>();
-        }
-
         private void FixedUpdate()
         {
             _rigidbody.velocity = _speed * _moveDirection;
@@ -29,5 +24,10 @@ namespace Entities
         {
             _speed = moveSpeed;
         }
+        
+        private void Awake()
+         {
+             _rigidbody = GetComponent<Rigidbody2D>();
+         }
     }
 }

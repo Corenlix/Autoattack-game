@@ -152,8 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4cc3ff1815891241a9262c2d9244b94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxAmount: 8
-  _amount: 0
+  _maxAmount: 15
 --- !u!114 &902877811645856533
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,7 +165,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85e5eb92cf2fe2847a6d1fcbafa2db02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveSpeed: 0.6
+  _moveSpeed: 0.4
   _damagePerSecond: 1
 --- !u!58 &902877811645856529
 CircleCollider2D:

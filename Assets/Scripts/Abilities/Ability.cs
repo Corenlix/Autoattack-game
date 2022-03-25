@@ -12,21 +12,11 @@ namespace Abilities
         protected AbilityLevel AbilityLevel;
         public Sprite Icon => _icon;
         public string Name => _name;
-
         public string NextLevelDescription { get; private set; }
-
         public string Description => _description;
-
         public int Level => AbilityLevel.CurrentLevel;
-
         public bool IsAvailableToLevelUp => AbilityLevel.IsAvailableToLevelUp;
-
-        private void Awake()
-        {
-            NextLevelDescription = _description;
-            enabled = false;
-        }
-
+        
         public void LevelUp()
         {
             if (!AbilityLevel.IsAvailableToLevelUp)
@@ -44,6 +34,12 @@ namespace Abilities
                 NextLevelDescription = BuildDescription();
         }
 
+        private void Awake()
+        {
+            NextLevelDescription = _description;
+            enabled = false;
+        }
+        
         public abstract void Init(Player abilityOwner);
 
         protected abstract string BuildDescription();

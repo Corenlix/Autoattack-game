@@ -35,11 +35,9 @@ namespace Abilities
             var nextLevelStats = (MagicWandStats) AbilityLevel.NextLevelStats;
             return new DescriptionBuilder(new DescriptionVariable[]
             {
-                new IntRangeDescriptionVariable(VariableName.Damage, nextLevelStats.Damage, currentStats.Damage),
-                new FloatDescriptionVariable(VariableName.ReloadTime, nextLevelStats.ReloadTime,
-                    currentStats.ReloadTime),
-                new FloatDescriptionVariable(VariableName.ProjectileSpeed, nextLevelStats.ProjectileSpeed,
-                    currentStats.ProjectileSpeed)
+                new IntRangeDescriptionVariable(VariableName.Damage, currentStats.Damage, nextLevelStats.Damage),
+                new FloatDescriptionVariable(VariableName.ReloadTime, currentStats.ReloadTime, nextLevelStats.ReloadTime),
+                new FloatDescriptionVariable(VariableName.ProjectileSpeed, currentStats.ProjectileSpeed, nextLevelStats.ProjectileSpeed)
             }).Build();
         }
 

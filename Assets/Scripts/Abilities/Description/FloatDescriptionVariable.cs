@@ -2,18 +2,18 @@
 {
     public class FloatDescriptionVariable : DescriptionVariable
     {
-        private readonly float _previousValue;
+        private readonly float _nextValue;
         private readonly float _value;
 
-        public FloatDescriptionVariable(VariableName name, float value, float previousValue) : base(name)
+        public FloatDescriptionVariable(VariableName name, float value, float nextValue) : base(name)
         {
             _value = value;
-            _previousValue = previousValue;
+            _nextValue = nextValue;
         }
 
         public override string GetDescription()
         {
-            var delta = _value - _previousValue;
+            var delta = _nextValue - _value;
             if (delta == 0)
                 return null;
 

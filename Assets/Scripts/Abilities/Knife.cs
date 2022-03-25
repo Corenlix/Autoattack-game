@@ -37,9 +37,8 @@ namespace Abilities
             var nextLevelStats = (KnifeStats) AbilityLevel.NextLevelStats;
             return new DescriptionBuilder(new DescriptionVariable[]
             {
-                new IntRangeDescriptionVariable(VariableName.Damage, nextLevelStats.Damage, currentStats.Damage),
-                new FloatDescriptionVariable(VariableName.ReloadTime, nextLevelStats.ReloadTime,
-                    currentStats.ReloadTime)
+                new IntRangeDescriptionVariable(VariableName.Damage, currentStats.Damage, nextLevelStats.Damage),
+                new FloatDescriptionVariable(VariableName.ReloadTime, currentStats.ReloadTime, nextLevelStats.ReloadTime)
             }).Build();
         }
 

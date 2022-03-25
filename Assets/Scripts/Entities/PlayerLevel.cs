@@ -6,14 +6,14 @@ namespace Entities
     public class PlayerLevel : MonoBehaviour
     {
         public int Experience { get; private set; }
-
-        public int ExperienceForNextLevel { get; private set; } = 25;
-
         public int CurrentLevel { get; private set; } = 1;
-
+        
+        public int ExperienceForNextLevel => _experiencesForLevel[CurrentLevel - 1];
         public event Action ExperienceChanged;
         public event Action LevelChanged;
 
+        [SerializeField] private int[] _experiencesForLevel;
+        
         public void AddExperience(int amount)
         {
             var experienceNotEnoughToLevelUp = ExperienceForNextLevel - Experience;
@@ -29,8 +29,10 @@ namespace Entities
 
         private void LevelUp()
         {
+            if (CurrentLevel >= _experiencesForLevel.Length)
+                throw new Exception();
+            
             Experience = 0;
-            ExperienceForNextLevel *= 2;
             CurrentLevel++;
             LevelChanged?.Invoke();
         }

@@ -1,6 +1,7 @@
 using Abilities;
 using UI;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
 namespace Entities
@@ -17,46 +18,16 @@ namespace Entities
         private static readonly int TakeDamage = Animator.StringToHash("TakeDamage");
         [SerializeField] private float _moveSpeed;
         [SerializeField] private ParticleSystem _bloodParticleSystem;
-
         [SerializeField] private AbilitiesChooserUIView abilitiesChooserUIViewPrefab;
-
         [SerializeField] private Canvas _worldCanvas;
         [SerializeField] private GameObject _abilitiesContainer;
         [SerializeField] private Ability _startAbility;
+        
         private PlayerAbilities _abilities;
         private Animator _animator;
         private Health _health;
         private Mover _mover;
         private PlayerLevel _playerLevel;
-
-        private void Awake()
-        {
-            _mover = GetComponent<Mover>();
-            _mover.SetSpeed(_moveSpeed);
-            _abilities = new PlayerAbilities(this, _abilitiesContainer, _worldCanvas, abilitiesChooserUIViewPrefab);
-
-            _animator = GetComponent<Animator>();
-            _health = GetComponent<Health>();
-            _playerLevel = GetComponent<PlayerLevel>();
-            _playerLevel.LevelChanged += _abilities.ChooseNewAbility;
-        }
-
-        private void Start()
-        {
-            _startAbility.LevelUp();
-        }
-
-        private void Update()
-        {
-            MoveInput();
-            if(Input.GetKeyDown(KeyCode.Q))
-                _playerLevel.AddExperience(10);
-        }
-
-        private void OnDestroy()
-        {
-            _playerLevel.LevelChanged -= _abilities.ChooseNewAbility;
-        }
 
         public void DealDamage(float damage)
         {
@@ -78,6 +49,42 @@ namespace Entities
                 transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * scaleModifier,
                     transform.localScale.y, transform.localScale.z);
             }
+        }
+
+        private void OnDied()
+        {
+            Debug.Log("player died");
+        }
+        
+        private void Start()
+        {
+            _startAbility.LevelUp();
+        }
+
+        private void Update()
+        {
+            MoveInput();
+            if(Input.GetKeyDown(KeyCode.Q))
+                _playerLevel.AddExperience(10);
+        }
+
+        private void OnDestroy()
+        {
+            _playerLevel.LevelChanged -= _abilities.ChooseNewAbility;
+            _health.Died -= OnDied;
+        }
+        
+        private void Awake()
+        {
+            _mover = GetComponent<Mover>();
+            _mover.SetSpeed(_moveSpeed);
+            _abilities = new PlayerAbilities(this, _abilitiesContainer, _worldCanvas, abilitiesChooserUIViewPrefab);
+
+            _animator = GetComponent<Animator>();
+            _health = GetComponent<Health>();
+            _health.Died += OnDied;
+            _playerLevel = GetComponent<PlayerLevel>();
+            _playerLevel.LevelChanged += _abilities.ChooseNewAbility;
         }
     }
 }
