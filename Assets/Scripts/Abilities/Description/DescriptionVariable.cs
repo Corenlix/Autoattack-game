@@ -20,6 +20,7 @@ namespace Abilities.Description
                 VariableName.ProjectileSpeed => "ProjectileSpeed",
                 VariableName.OrbitRadius => "Orbit radius",
                 VariableName.TurnoverPeriod => "Turnover time",
+                VariableName.ProjectilesCount => "Projectiles",
                 _ => throw new InvalidEnumArgumentException()
             };
         }
@@ -34,5 +35,6 @@ namespace Abilities.Description
         ProjectileSpeed,
         OrbitRadius,
         TurnoverPeriod,
+        ProjectilesCount,
     }
 }

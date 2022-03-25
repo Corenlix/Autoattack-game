@@ -38,14 +38,20 @@ namespace Abilities
             return new DescriptionBuilder(new DescriptionVariable[]
             {
                 new IntRangeDescriptionVariable(VariableName.Damage, currentStats.Damage, nextLevelStats.Damage),
-                new FloatDescriptionVariable(VariableName.ReloadTime, currentStats.ReloadTime, nextLevelStats.ReloadTime)
+                new FloatDescriptionVariable(VariableName.ReloadTime, currentStats.ReloadTime, nextLevelStats.ReloadTime),
+                new IntDescriptionVariable(VariableName.ProjectilesCount, currentStats.ProjectilesCount, nextLevelStats.ProjectilesCount),
             }).Build();
         }
 
         private void Use()
         {
-            var knife = (KnifeProjectile)_pool.Create((KnifeStats) AbilityLevel.CurrentStats);
-            knife.SetMoveDirection(_abilityOwner.MoveDirection);
+            var currentStats = (KnifeStats) AbilityLevel.CurrentStats;
+            for (int i = 0; i < currentStats.ProjectilesCount; i++)
+            {
+                Vector3 offset = 0.25f*i * Vector3.up;
+                var knife = (KnifeProjectile) _pool.Create(currentStats, transform.position + offset);
+                knife.SetMoveDirection(_abilityOwner.MoveDirection);
+            }
         }
 
         private float GetReloadTime()
@@ -64,8 +70,11 @@ namespace Abilities
 
         [SerializeField] private float _projectileSpeed;
 
+        [SerializeField] private int _projectilesCount;
+        
         public float ReloadTime => _reloadTime;
         public IntRange Damage => _damage;
         public float ProjectileSpeed => _projectileSpeed;
+        public int ProjectilesCount => _projectilesCount;
     }
 }

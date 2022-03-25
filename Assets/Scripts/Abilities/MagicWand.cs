@@ -61,9 +61,9 @@ namespace Abilities
         private IntRange _damage = new IntRange(5, 8);
 
         [SerializeField] private float _projectileSpeed;
+        
         public float ReloadTime => _reloadTime;
         public IntRange Damage => _damage;
-
         public float ProjectileSpeed => _projectileSpeed;
     }
 }

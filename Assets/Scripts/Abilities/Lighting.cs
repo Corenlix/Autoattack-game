@@ -30,7 +30,8 @@ namespace Abilities
             return new DescriptionBuilder(new DescriptionVariable[]
             {
                 new IntRangeDescriptionVariable(VariableName.Damage, currentStats.Damage, nextLevelStats.Damage),
-                new FloatDescriptionVariable(VariableName.ReloadTime, currentStats.ReloadTime, nextLevelStats.ReloadTime)
+                new FloatDescriptionVariable(VariableName.ReloadTime, currentStats.ReloadTime, nextLevelStats.ReloadTime),
+                new IntDescriptionVariable(VariableName.ProjectilesCount, currentStats.ProjectilesCount, nextLevelStats.ProjectilesCount),
             }).Build();
         }
 
@@ -42,7 +43,11 @@ namespace Abilities
 
         private void Use()
         {
-            _pool.Create((LightingStats) AbilityLevel.CurrentStats);
+            var currentStats = (LightingStats) AbilityLevel.CurrentStats;
+            for (int i = 0; i < currentStats.ProjectilesCount; i++)
+            {
+                _pool.Create(currentStats);
+            }
         }
 
         private float GetReloadTime()
@@ -59,7 +64,10 @@ namespace Abilities
         [IntRangeSlider(0, 100)] [SerializeField]
         private IntRange _damage = new IntRange(8, 15);
 
+        [SerializeField] private int _projectilesCount;
+
         public float ReloadTime => _reloadTime;
         public IntRange Damage => _damage;
+        public int ProjectilesCount => _projectilesCount;
     }
 }
